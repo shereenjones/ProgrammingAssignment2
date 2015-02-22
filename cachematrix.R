@@ -15,7 +15,7 @@
 
 ## Calculate and Cache inverse of matrix x
 makeCacheMatrix <- function(x = matrix()) {
-      
+  
       set <- function (y) {
             x <<- y
             inv <<- NULL
@@ -39,16 +39,35 @@ cacheSolve <- function(x, ...) {
   
         my_inv <- NULL
         
+        ## if this is the first time the function is run
+        ## initialize key variables
+        
+        if (!exists("inv")) {     
+            inv <<- NULL
+        }
+        
+        if (!exists("prev_x")) {
+            prev_x <<- NULL
+        }
+        
+                
         cm <- makeCacheMatrix(x)
         
-        my_inv <- cm$getinverse()
+        ## check if matrix has changed
+        
+        if (identical(x, prev_x)) {
+              my_inv <- cm$getinverse()
+        }
           
       
         if (!is.null(my_inv)) {
               message ("getting cached data")
               return(my_inv)    ## return inverse from cache
         }
+        
+        ## new matrix - cache data
 
+        prev_x <<- x
         data <- cm$get()
         inv <- solve(data, ...)
         cm$setinverse(inv)
